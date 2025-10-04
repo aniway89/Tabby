@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "TabForge AI",
+  "name": "TabForge - Smart Tab Manager",
   "version": "1.0",
-  "description": "AI-powered tab organization with themes",
-  "permissions": ["tabs", "tabGroups", "storage", "notifications"],
+  "description": "Organize your tabs intelligently with AI-powered grouping",
+  "permissions": ["tabs", "tabGroups", "storage"],
   "action": {
     "default_popup": "popup.html"
   },

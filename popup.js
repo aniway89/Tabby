@@ -1,77 +1,32 @@
 // Global variables
 let currentSettings = {
-  closeBehavior: 'keep',
-  theme: 'default'
+  keepGroups: false, // Default: Auto ungroup
+  theme: 'professional'
 };
 
-// Theme definitions
-const themes = {
-  default: {
-    '📱 Social Media': { title: '📱 Social Media', color: 'blue' },
-    '💻 Development': { title: '💻 Development', color: 'green' },
-    '🛒 Shopping': { title: '🛒 Shopping', color: 'yellow' },
-    '📧 Email': { title: '📧 Email', color: 'red' },
-    '🎮 Entertainment': { title: '🎮 Entertainment', color: 'purple' },
-    '📊 Productivity': { title: '📊 Productivity', color: 'cyan' },
-    '📁 Other': { title: '📁 Other', color: 'grey' }
-  },
-  dark: {
-    '📱 Social Media': { title: '● Social', color: 'grey' },
-    '💻 Development': { title: '● Code', color: 'grey' },
-    '🛒 Shopping': { title: '● Shopping', color: 'grey' },
-    '📧 Email': { title: '● Mail', color: 'grey' },
-    '🎮 Entertainment': { title: '● Media', color: 'grey' },
-    '📊 Productivity': { title: '● Work', color: 'grey' },
-    '📁 Other': { title: '● Other', color: 'grey' }
-  },
-  colorful: {
-    '📱 Social Media': { title: '🎉 Social Fun', color: 'pink' },
-    '💻 Development': { title: '🚀 Dev Time', color: 'orange' },
-    '🛒 Shopping': { title: '🛍️ Buy Stuff', color: 'green' },
-    '📧 Email': { title: '💌 Messages', color: 'blue' },
-    '🎮 Entertainment': { title: '🎯 Fun Time', color: 'red' },
-    '📊 Productivity': { title: '📈 Get Work Done', color: 'purple' },
-    '📁 Other': { title: '📦 Miscellaneous', color: 'yellow' }
-  }
-};
+let selectedTheme = 'professional';
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Extension loaded!');
-  
-  // Load saved settings
-  loadSettings();
-  
-  // Tab switching
-  setupTabs();
-  
-  // Organize Tabs Button
-  document.getElementById('organizeBtn').addEventListener('click', organizeTabs);
-  
-  // Reset Groups Button
-  document.getElementById('resetBtn').addEventListener('click', resetGroups);
-  
-  // Save Settings Button
-  document.getElementById('saveSettings').addEventListener('click', saveSettings);
-  
-  // Apply Theme Button
-  document.getElementById('applyTheme').addEventListener('click', applyTheme);
-  
-  // Theme selection
-  setupThemeSelection();
+  console.log('TabForge extension loaded!');
+  initializeExtension();
 });
 
-// Tab switching function
-function setupTabs() {
+async function initializeExtension() {
+  await loadSettings();
+  setupTabNavigation();
+  loadThemes();
+  setupEventListeners();
+}
+
+function setupTabNavigation() {
   const tabBtns = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
   
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Remove active class from all
       tabBtns.forEach(b => b.classList.remove('active'));
       tabContents.forEach(c => c.classList.remove('active'));
       
-      // Add active class to clicked tab
       btn.classList.add('active');
       const tabId = btn.getAttribute('data-tab');
       document.getElementById(tabId).classList.add('active');
@@ -79,108 +34,229 @@ function setupTabs() {
   });
 }
 
-// Theme selection setup
-function setupThemeSelection() {
-  const themeOptions = document.querySelectorAll('.theme-option');
-  
-  themeOptions.forEach(option => {
-    option.addEventListener('click', () => {
-      // Remove selected class from all
-      themeOptions.forEach(opt => opt.classList.remove('selected'));
-      // Add to clicked one
-      option.classList.add('selected');
+function loadThemes() {
+  const themeGrid = document.getElementById('themeGrid');
+  themeGrid.innerHTML = '';
+
+  for (const [key, theme] of Object.entries(themes)) {
+    const themeCard = document.createElement('div');
+    themeCard.className = `theme-card ${key === currentSettings.theme ? 'selected' : ''}`;
+    themeCard.setAttribute('data-theme', key);
+    
+    themeCard.innerHTML = `
+      <h4>${theme.name}</h4>
+      <p>${theme.description}</p>
+      <div class="theme-features">
+        ${theme.features.map(feat => `<span class="theme-badge">${feat}</span>`).join('')}
+      </div>
+    `;
+    
+    themeCard.addEventListener('click', () => {
+      document.querySelectorAll('.theme-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      themeCard.classList.add('selected');
+      
+      selectedTheme = key;
+      previewTheme(key);
+      
+      // Enable apply button
+      document.getElementById('applyTheme').disabled = false;
     });
-  });
+    
+    themeGrid.appendChild(themeCard);
+  }
+
+  previewTheme(currentSettings.theme);
 }
 
-// Load settings from storage
+function previewTheme(themeKey) {
+  const theme = themes[themeKey];
+  const previewContent = document.getElementById('previewContent');
+  
+  // Add theme class to body for color preview
+  document.body.className = '';
+  document.body.classList.add(`theme-${themeKey.replace(' ', '-')}`);
+  
+  let previewHTML = '';
+  for (const [category, style] of Object.entries(theme.categories)) {
+    previewHTML += `
+      <div class="preview-item ${style.previewClass}">
+        <span class="preview-icon">${style.icon}</span>
+        <span class="preview-title">${style.title}</span>
+        <span class="preview-color">${style.color}</span>
+      </div>
+    `;
+  }
+  
+  previewContent.innerHTML = previewHTML;
+}
+
+function setupEventListeners() {
+  document.getElementById('organizeBtn').addEventListener('click', organizeTabs);
+  document.getElementById('resetBtn').addEventListener('click', resetGroups);
+  document.getElementById('saveSettings').addEventListener('click', saveSettings);
+  document.getElementById('applyTheme').addEventListener('click', applyTheme);
+  document.getElementById('collapseBtn').addEventListener('click', collapseOtherGroups);
+  document.getElementById('expandBtn').addEventListener('click', expandAllGroups);
+}
+
 async function loadSettings() {
   try {
     const result = await chrome.storage.local.get(['tabForgeSettings']);
     if (result.tabForgeSettings) {
       currentSettings = result.tabForgeSettings;
+      selectedTheme = currentSettings.theme;
       
-      // Update UI to match settings
-      const radio = document.querySelector(`input[name="closeBehavior"][value="${currentSettings.closeBehavior}"]`);
-      if (radio) radio.checked = true;
-      
-      // Select current theme
-      const themeOption = document.querySelector(`.theme-option[data-theme="${currentSettings.theme}"]`);
-      if (themeOption) themeOption.classList.add('selected');
+      const toggle = document.getElementById('keepGroupsToggle');
+      if (toggle) {
+        toggle.checked = currentSettings.keepGroups;
+      }
     }
   } catch (error) {
     console.log('No settings found, using defaults');
   }
 }
 
-// Save settings
 async function saveSettings() {
   try {
-    const closeBehavior = document.querySelector('input[name="closeBehavior"]:checked').value;
-    currentSettings.closeBehavior = closeBehavior;
+    const keepGroupsToggle = document.getElementById('keepGroupsToggle');
+    currentSettings.keepGroups = keepGroupsToggle.checked;
     
     await chrome.storage.local.set({ tabForgeSettings: currentSettings });
-    showStatus('Settings saved!', 'success');
+    showStatus('Settings saved successfully!', 'success');
   } catch (error) {
     showStatus('Error saving settings', 'error');
   }
 }
 
-// Apply selected theme
 async function applyTheme() {
   try {
-    const selectedTheme = document.querySelector('.theme-option.selected');
-    if (!selectedTheme) {
+    const selectedThemeCard = document.querySelector('.theme-card.selected');
+    if (!selectedThemeCard) {
       showStatus('Please select a theme first', 'error');
       return;
     }
     
-    const themeName = selectedTheme.getAttribute('data-theme');
+    const themeName = selectedThemeCard.getAttribute('data-theme');
+    const theme = themes[themeName];
+    
+    // Update current settings
     currentSettings.theme = themeName;
+    selectedTheme = themeName;
     
     // Save theme preference
     await chrome.storage.local.set({ tabForgeSettings: currentSettings });
     
     // Apply theme to existing groups
-    await applyThemeToGroups(themeName);
-    showStatus(`Applied ${themeName} theme!`, 'success');
+    const success = await applyThemeToExistingGroups(themeName);
+    
+    if (success) {
+      showStatus(`✅ Applied ${theme.name} theme to all groups!`, 'success');
+    } else {
+      showStatus(`✅ ${theme.name} theme saved! Create new groups to see it.`, 'success');
+    }
   } catch (error) {
+    console.error('Error applying theme:', error);
     showStatus('Error applying theme', 'error');
   }
 }
 
-// Apply theme to existing groups
-async function applyThemeToGroups(themeName) {
+async function applyThemeToExistingGroups(themeName) {
   const theme = themes[themeName];
   const tabs = await chrome.tabs.query({ currentWindow: true });
-  const groups = await chrome.tabGroups.query({ windowId: tabs[0]?.windowId });
+  
+  if (tabs.length === 0) return false;
+  
+  const groups = await chrome.tabGroups.query({ windowId: tabs[0].windowId });
+  
+  if (groups.length === 0) return false;
+  
+  let groupsUpdated = 0;
   
   for (const group of groups) {
-    // Try to match group title with theme categories
-    for (const [category, style] of Object.entries(theme)) {
-      if (group.title.includes(category.replace(/[^\w\s]/g, '')) || 
-          category.includes(group.title.replace(/[^\w\s]/g, ''))) {
+    try {
+      // Analyze the tabs in this group to determine the best category
+      const bestCategory = await findBestCategoryForGroup(group.id);
+      
+      if (bestCategory && theme.categories[bestCategory]) {
+        const style = theme.categories[bestCategory];
+        
+        // Update the group with new theme
         await chrome.tabGroups.update(group.id, {
-          title: style.title,
+          title: `${style.icon} ${style.title}`,
           color: style.color
         });
-        break;
+        
+        groupsUpdated++;
+      }
+    } catch (error) {
+      console.error(`Error updating group ${group.id}:`, error);
+    }
+  }
+  
+  console.log(`Theme applied: Updated ${groupsUpdated} groups`);
+  return groupsUpdated > 0;
+}
+
+async function findBestCategoryForGroup(groupId) {
+  try {
+    const tabs = await chrome.tabs.query({});
+    const groupTabs = tabs.filter(tab => tab.groupId === groupId);
+    
+    if (groupTabs.length === 0) return null;
+    
+    // Count categories from all tabs in the group
+    const categoryScores = {};
+    
+    for (const tab of groupTabs) {
+      const category = getTabCategory(tab.title, tab.url);
+      categoryScores[category] = (categoryScores[category] || 0) + 1;
+    }
+    
+    // Find the most common category
+    let bestCategory = null;
+    let highestScore = 0;
+    
+    for (const [category, score] of Object.entries(categoryScores)) {
+      if (score > highestScore) {
+        highestScore = score;
+        bestCategory = category;
       }
     }
+    
+    return bestCategory;
+  } catch (error) {
+    console.error('Error finding category for group:', error);
+    return null;
   }
 }
 
-// Organize tabs function
 async function organizeTabs() {
   try {
-    showStatus('Getting tabs...', 'info');
+    const btn = document.getElementById('organizeBtn');
+    btn.classList.add('loading');
+    showStatus('Analyzing your tabs...', 'info');
+    
+    const themeToUse = selectedTheme;
+    const currentTheme = themes[themeToUse];
     
     const tabs = await chrome.tabs.query({ currentWindow: true });
-    showStatus(`Found ${tabs.length} tabs. Organizing...`, 'info');
+    
+    if (tabs.length === 0) {
+      showStatus('No tabs found to organize', 'error');
+      btn.classList.remove('loading');
+      return;
+    }
+    
+    showStatus(`Found ${tabs.length} tabs. Organizing with ${currentTheme.name} theme...`, 'info');
+    
+    // Ungroup all tabs first for clean start
+    await chrome.tabs.ungroup(tabs.map(tab => tab.id));
     
     const categories = {};
-    const currentTheme = themes[currentSettings.theme];
     
+    // Categorize tabs
     for (const tab of tabs) {
       const category = getTabCategory(tab.title, tab.url);
       if (!categories[category]) {
@@ -189,52 +265,132 @@ async function organizeTabs() {
       categories[category].push(tab.id);
     }
     
+    // Create groups with theme
     let groupsCreated = 0;
     for (const [categoryName, tabIds] of Object.entries(categories)) {
       if (tabIds.length > 0) {
         const groupId = await chrome.tabs.group({ tabIds: tabIds });
-        const themeStyle = currentTheme[categoryName] || themes.default[categoryName];
+        const themeStyle = currentTheme.categories[categoryName];
         
-        await chrome.tabGroups.update(groupId, {
-          title: themeStyle.title,
-          color: themeStyle.color
-        });
-        groupsCreated++;
+        if (themeStyle) {
+          await chrome.tabGroups.update(groupId, {
+            title: `${themeStyle.icon} ${style.title}`,
+            color: themeStyle.color
+          });
+          groupsCreated++;
+        }
       }
     }
     
-    // Save that we have active groups
+    // Save settings
     await chrome.storage.local.set({ 
       hasActiveGroups: true,
-      groupsCreated: new Date().toISOString()
+      tabForgeSettings: currentSettings
     });
     
-    showStatus(`✅ Created ${groupsCreated} groups with ${currentSettings.theme} theme!`, 'success');
+    btn.classList.remove('loading');
+    showStatus(`✅ Created ${groupsCreated} groups with ${currentTheme.name} theme!`, 'success');
     
   } catch (error) {
-    console.error('Error:', error);
-    showStatus('❌ Error: ' + error.message, 'error');
+    console.error('Error organizing tabs:', error);
+    document.getElementById('organizeBtn').classList.remove('loading');
+    showStatus('❌ Error organizing tabs', 'error');
   }
 }
 
-// Reset groups function
 async function resetGroups() {
   try {
+    const btn = document.getElementById('resetBtn');
+    btn.classList.add('loading');
     showStatus('Resetting groups...', 'info');
     
     const tabs = await chrome.tabs.query({ currentWindow: true });
-    await chrome.tabs.ungroup(tabs.map(tab => tab.id));
     
-    // Clear active groups flag
+    if (tabs.length > 0) {
+      await chrome.tabs.ungroup(tabs.map(tab => tab.id));
+    }
+    
     await chrome.storage.local.remove(['hasActiveGroups']);
+    btn.classList.remove('loading');
+    showStatus('✅ All groups have been reset!', 'success');
     
-    showStatus('✅ All groups reset!', 'success');
   } catch (error) {
+    console.error('Error resetting groups:', error);
+    document.getElementById('resetBtn').classList.remove('loading');
     showStatus('❌ Error resetting groups', 'error');
   }
 }
 
-// Simple category detection
+// NEW: Collapse Other Groups Feature
+async function collapseOtherGroups() {
+  try {
+    const btn = document.getElementById('collapseBtn');
+    btn.classList.add('loading');
+    showStatus('Collapsing other groups...', 'info');
+    
+    const tabs = await chrome.tabs.query({ currentWindow: true, active: true });
+    if (tabs.length === 0) {
+      showStatus('No active tab found', 'error');
+      btn.classList.remove('loading');
+      return;
+    }
+    
+    const activeTab = tabs[0];
+    const activeGroupId = activeTab.groupId;
+    
+    const groups = await chrome.tabGroups.query({ windowId: activeTab.windowId });
+    
+    let collapsedCount = 0;
+    for (const group of groups) {
+      if (group.id !== activeGroupId && !group.collapsed) {
+        await chrome.tabGroups.update(group.id, { collapsed: true });
+        collapsedCount++;
+      }
+    }
+    
+    btn.classList.remove('loading');
+    showStatus(`✅ Collapsed ${collapsedCount} groups!`, 'success');
+    
+  } catch (error) {
+    console.error('Error collapsing groups:', error);
+    document.getElementById('collapseBtn').classList.remove('loading');
+    showStatus('❌ Error collapsing groups', 'error');
+  }
+}
+
+// NEW: Expand All Groups Feature
+async function expandAllGroups() {
+  try {
+    const btn = document.getElementById('expandBtn');
+    btn.classList.add('loading');
+    showStatus('Expanding all groups...', 'info');
+    
+    const tabs = await chrome.tabs.query({ currentWindow: true });
+    if (tabs.length === 0) {
+      btn.classList.remove('loading');
+      return;
+    }
+    
+    const groups = await chrome.tabGroups.query({ windowId: tabs[0].windowId });
+    
+    let expandedCount = 0;
+    for (const group of groups) {
+      if (group.collapsed) {
+        await chrome.tabGroups.update(group.id, { collapsed: false });
+        expandedCount++;
+      }
+    }
+    
+    btn.classList.remove('loading');
+    showStatus(`✅ Expanded ${expandedCount} groups!`, 'success');
+    
+  } catch (error) {
+    console.error('Error expanding groups:', error);
+    document.getElementById('expandBtn').classList.remove('loading');
+    showStatus('❌ Error expanding groups', 'error');
+  }
+}
+
 function getTabCategory(title, url) {
   if (!title) title = '';
   if (!url) url = '';
@@ -245,61 +401,60 @@ function getTabCategory(title, url) {
   if (lowerTitle.includes('twitter') || lowerUrl.includes('twitter') ||
       lowerTitle.includes('facebook') || lowerUrl.includes('facebook') ||
       lowerTitle.includes('instagram') || lowerUrl.includes('instagram') ||
-      lowerTitle.includes('linkedin') || lowerUrl.includes('linkedin')) 
+      lowerTitle.includes('linkedin') || lowerUrl.includes('linkedin') ||
+      lowerTitle.includes('reddit') || lowerUrl.includes('reddit')) 
     return '📱 Social Media';
   
   if (lowerTitle.includes('github') || lowerUrl.includes('github') ||
       lowerTitle.includes('stackoverflow') || lowerUrl.includes('stackoverflow') ||
       lowerTitle.includes('gitlab') || lowerUrl.includes('gitlab') ||
-      lowerTitle.includes('codepen') || lowerTitle.includes('code') ||
-      lowerTitle.includes('programming')) 
+      lowerTitle.includes('codepen') || lowerUrl.includes('codepen') ||
+      lowerTitle.includes('vs code') || lowerTitle.includes('visual studio') ||
+      lowerTitle.includes('developer') || lowerTitle.includes('programming')) 
     return '💻 Development';
   
   if (lowerTitle.includes('amazon') || lowerUrl.includes('amazon') ||
-      lowerTitle.includes('shopping') || lowerTitle.includes('ebay') ||
-      lowerTitle.includes('aliexpress') || lowerTitle.includes('store')) 
+      lowerTitle.includes('ebay') || lowerUrl.includes('ebay') ||
+      lowerTitle.includes('flipkart') || lowerUrl.includes('flipkart') ||
+      lowerTitle.includes('myntra') || lowerUrl.includes('myntra') ||
+      lowerTitle.includes('aliexpress') || lowerUrl.includes('aliexpress') ||
+      lowerTitle.includes('shop') || lowerTitle.includes('cart')) 
     return '🛒 Shopping';
   
   if (lowerTitle.includes('gmail') || lowerUrl.includes('gmail') ||
       lowerTitle.includes('outlook') || lowerUrl.includes('outlook') ||
-      lowerTitle.includes('email') || lowerTitle.includes('yahoo mail')) 
+      lowerTitle.includes('yahoo mail') || lowerUrl.includes('yahoo') ||
+      lowerTitle.includes('hotmail') || lowerUrl.includes('hotmail') ||
+      lowerTitle.includes('inbox') || lowerTitle.includes('email')) 
     return '📧 Email';
   
   if (lowerTitle.includes('youtube') || lowerUrl.includes('youtube') ||
       lowerTitle.includes('netflix') || lowerUrl.includes('netflix') ||
       lowerTitle.includes('spotify') || lowerUrl.includes('spotify') ||
-      lowerTitle.includes('twitch') || lowerTitle.includes('music')) 
+      lowerTitle.includes('twitch') || lowerUrl.includes('twitch') ||
+      lowerTitle.includes('prime video') || lowerUrl.includes('prime') ||
+      lowerTitle.includes('music') || lowerTitle.includes('movie')) 
     return '🎮 Entertainment';
   
   if (lowerTitle.includes('docs') || lowerTitle.includes('notion') ||
       lowerTitle.includes('trello') || lowerTitle.includes('asana') ||
+      lowerTitle.includes('slack') || lowerTitle.includes('discord') ||
       lowerTitle.includes('calendar') || lowerTitle.includes('drive')) 
     return '📊 Productivity';
   
   return '📁 Other';
 }
 
-// Status display function
 function showStatus(message, type = 'info') {
   const status = document.getElementById('status');
-  status.style.display = 'block';
   status.textContent = message;
+  status.className = `status-message status-${type}`;
   
-  if (type === 'success') {
-    status.style.background = '#e8f5e8';
-    status.style.color = '#2e7d32';
-  } else if (type === 'error') {
-    status.style.background = '#ffebee';
-    status.style.color = '#c62828';
-  } else {
-    status.style.background = '#f5f5f5';
-    status.style.color = '#333';
-  }
-  
-  // Auto-hide success messages after 3 seconds
   if (type === 'success') {
     setTimeout(() => {
       status.style.display = 'none';
-    }, 3000);
+    }, 4000);
+  } else {
+    status.style.display = 'block';
   }
 }

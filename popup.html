@@ -28,37 +28,37 @@
           <span class="btn-icon">🗑️</span>
           Reset All Groups
         </button>
+        <div class="action-buttons">
+          <button id="collapseBtn" class="action-btn">
+            <span class="btn-icon">📦</span>
+            Collapse Other Groups
+          </button>
+          <button id="expandBtn" class="action-btn">
+            <span class="btn-icon">📂</span>
+            Expand All Groups
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Settings Tab -->
     <div id="settings" class="tab-content">
       <div class="card">
-        <h3>Browser Close Behavior</h3>
-        <div class="option-group">
-          <label class="option-item">
-            <input type="radio" name="closeBehavior" value="keep">
-            <span class="option-content">
-              <strong>💾 Keep Groups</strong>
-              <small>Groups remain when browser reopens</small>
-            </span>
+        <h3>Browser Behavior</h3>
+        <div class="toggle-group">
+          <label class="toggle-item">
+            <div class="toggle-content">
+              <strong>🔒 Keep Groups After Closing</strong>
+              <small>Tab groups remain when you reopen browser</small>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="keepGroupsToggle">
+              <span class="toggle-slider"></span>
+            </label>
           </label>
-          
-          <label class="option-item">
-            <input type="radio" name="closeBehavior" value="ungroup">
-            <span class="option-content">
-              <strong>🔄 Auto Ungroup</strong>
-              <small>Groups removed when browser closes</small>
-            </span>
-          </label>
-          
-          <label class="option-item">
-            <input type="radio" name="closeBehavior" value="ask">
-            <span class="option-content">
-              <strong>❓ Ask Me First</strong>
-              <small>Prompt before closing browser</small>
-            </span>
-          </label>
+        </div>
+        <div class="setting-note">
+          <small>When OFF: Groups automatically removed when browser closes</small>
         </div>
         <button id="saveSettings" class="primary-btn">Save Settings</button>
       </div>
@@ -69,7 +69,7 @@
       <div class="card">
         <h3>Choose Theme Style</h3>
         <div class="theme-grid" id="themeGrid">
-          <!-- Themes will be loaded here -->
+          <!-- Themes loaded dynamically -->
         </div>
         
         <div class="theme-preview" id="themePreview">
@@ -77,7 +77,8 @@
           <div id="previewContent" class="preview-content"></div>
         </div>
         
-        <button id="applyTheme" class="primary-btn" style="display: none;">
+        <!-- Apply Button - Always visible but enabled only when theme selected -->
+        <button id="applyTheme" class="primary-btn apply-theme-btn" disabled>
           <span class="btn-icon">🎨</span>
           Apply Selected Theme
         </button>
