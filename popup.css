@@ -16,7 +16,7 @@ html{
 .container {
   text-align: center;
   color: white;
-  border: .7px solid rgb(144 70 255);
+  /* border: .7px solid rgb(144 70 255); */
   padding: 20px;
   margin-bottom: 0.2px;
   background-color: black;
@@ -94,9 +94,64 @@ label {
 .icon{
     width: 45px;
 }
-input[type="checkbox"] {
-  accent-color: rgb(144 70 255);
-  transform: scale(1.2);
+
+/* Toggle Switch Styles */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.toggle-label {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggle-label input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #666;
+  border-radius: 24px;
+  transition: .3s;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .toggle-slider {
+  background-color: rgb(144 70 255);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(18px);
+}
+
+.toggle-text {
+  font-size: 13px;
+  color: #d3d3d3;
 }
 
 .note small {
@@ -134,73 +189,124 @@ input[type="checkbox"] {
   border-color: #1a2f3d;
   display: block;
 }
+
 .Theme-section{
     display: none;
     flex-direction: column;
     gap: 10px;
     justify-content: center;
 }
+
 .section-1{
-    display: Flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
     justify-content: center;
 }
-.settting_button{
-    font-size: .7rem;
+
+.setting_button{
+    font-size: .8rem;
     cursor: pointer;
-    transition-duration: .3s;&:hover{
-        color: rgb(118, 59, 207);
-        scale: 1.2;
-    }
+    transition-duration: .3s;
+    color: rgb(255, 255, 255);
 }
+
+.setting_button:hover{
+    color: rgb(204, 204, 204);
+    scale: 1.1;
+}
+
 .button_navigation{
-    display:grid;
+    display: grid;
     place-content: center;
-    padding: 10px ;
+    padding: 10px;
     border: 0.7px solid rgb(118, 59, 207);
     border-radius: 5px;
     margin-top: 10px;
-    transition-duration: 0.3s;&:hover{
-        background-color: rgb(118, 59, 207);
-        cursor: pointer;
-        color: White;
-    }
+    transition-duration: 0.3s;
+    cursor: pointer;
 }
+
+.button_navigation:hover{
+    background-color: rgb(118, 59, 207);
+    color: White;
+}
+
 .Theme-area{
-    display: None;
+    display: none;
     flex-direction: column;
     gap: 10px;
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
-.button_selecion{
-    /* border: 1px solid white; */
-    padding: 10px;
-    border-radius: 4px;
-}
-.Natural_Green{
-    background-color: seagreen;
-    
-}
-.Deep_Blue{
-    background-color: rgb(14, 4, 39);
-    color: Whie;
-    
-}
-.Dark_Purple{
-    background-color: rgb(34, 0, 51);
-    color: white;
-    
-}
-.Light_Purple{
-    background-color: rgb(142, 87, 224);
-    color: white;
-    
-}
-.white_theme{
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
 
+.button_selection{
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 0.6px solid  rgb(157, 127, 202);
+    text-align: center;
+    color: white; /* Default text color to white */
+}
+
+.button_selection:hover{
+
+    border-color: rgba(255,255,255,0.2);
+}
+
+/* Active theme button styles - border only, no background */
+.button_selection.active {
+    background: transparent !important;
+    background-color: rgb(157, 127, 202) !important;
+}
+
+/* Random theme button backgrounds */
+
+.theme-1.active {
+    color: white;
+    background-color: rgb(157, 127, 202);
+}
+
+
+.theme-2.active {
+    color: white;
+    background-color: rgb(157, 127, 202);
+}
+
+
+.theme-3.active {
+   color: white;
+    background-color: rgb(157, 127, 202);
+}
+
+
+.theme-4.active {
+   color: white;
+    background-color: rgb(157, 127, 202);
+}
+
+
+.theme-5.active {
+color: white;
+    background-color: rgb(157, 127, 202);
+}
+
+/* Back Button Styles */
+.back-button {
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left;
+    padding: 5px 0;
+    transition-duration: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-button:hover {
+    color: white;
 }

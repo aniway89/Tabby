@@ -7,54 +7,52 @@
 <body>
   <div class="container">
     <div class="section-1">
-
         <img src="icons/Icon.png" alt="" class="icon">
-        <h2><span class="purple">
-            {
-        </span> Tabby <span class="purple">
-        }
-        </span> </h2> 
+        <h2><span class="purple">{</span> Tabby <span class="purple">}</span></h2> 
         <p>Smart tab organization with auto-cleanup</p>
         
         <button id="organizeBtn">Organize Tabs</button>
         <button id="resetBtn" class="reset">UnGroups</button>
-        <div class="settting_button">Setting</div>
-        
-    
+        <div class="setting_button" id="Setting">Setting</div>
         
         <div id="status"></div>
     </div>
-    <div class="Theme-section">
+    
+    <div class="Theme-section" id="setting_pannel">
+        <div class="back-button" id="backFromSettings">←</div>
         <h4>Settings</h4>
             
         <div class="section">
-        <label>
-        <input type="checkbox" id="keepGroupsToggle">
-            Keep groups after browser closes
-        </label>
-        <div class="note">
-            <small>When unchecked: Groups will be removed AND old tabs will be closed when browser reopens</small>
-        </div>
-        <div class="button_navigation">
+          <div class="toggle-container">
+            <label class="toggle-label">
+              <input type="checkbox" id="keepGroupsToggle">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-text">Keep groups after browser closes</span>
+          </div>
+          
+          <div class="button_navigation" id="changeThemeBtn">
             Change Theme
-        </div>
+          </div>
         </div>
     </div>
-    <div class="Theme-area">
-        <div class="button_selecion Natural_Green">
-            Natrual Green
+    
+    <div class="Theme-area" id="Theme_area">
+        <div class="back-button" id="backFromTheme">←</div>
+        <div class="button_selection theme-1" data-theme="Natural_Green">
+            Theme 1
         </div>
-        <div class="button_selecion Deep_Blue">
-            Deep Blue
+        <div class="button_selection theme-2" data-theme="Deep_Blue">
+            Theme 2
         </div>
-        <div class="button_selecion Dark_Purple">
-            Dark Purple
+        <div class="button_selection theme-3" data-theme="Dark_Purple">
+            Theme 3
         </div>
-        <div class="button_selecion Light_Purple">
-            Tobby Theme
+        <div class="button_selection theme-4" data-theme="Light_Purple">
+            Theme 4
         </div>
-        <div class="button_selecion white_theme">
-            Black & White
+        <div class="button_selection theme-5" data-theme="white_theme">
+            Theme 5
         </div>
     </div>
   </div>
