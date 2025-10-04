@@ -1,6 +1,6 @@
-/* popup.css - Fixed version */
+/* popup.css - Enhanced version */
 body {
-  width: 300px;
+  width: 320px;
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -45,13 +45,42 @@ p {
   box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
-#organizeBtn:active {
-  transform: translateY(0);
+.options {
+  background: rgba(255,255,255,0.1);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: left;
 }
 
-#organizeBtn.loading {
-  background: #ffa726;
-  cursor: not-allowed;
+.options label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.options input[type="radio"] {
+  margin-right: 8px;
+}
+
+.reset-btn {
+  width: 100%;
+  padding: 10px 20px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.reset-btn:hover {
+  background: #ff5252;
+  transform: translateY(-2px);
 }
 
 #status {

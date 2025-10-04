@@ -8,7 +8,21 @@
   <div class="container">
     <h3>🔄 TabForge AI</h3>
     <p>One-click tab organization with AI intelligence</p>
+    
     <button id="organizeBtn">🧠 Analyze & Organize Tabs</button>
+    
+    <div class="options">
+      <label>
+        <input type="radio" name="saveMode" value="save" checked> 
+        💾 Save groups permanently
+      </label>
+      <label>
+        <input type="radio" name="saveMode" value="unsave"> 
+        ⏰ Ungroup when browser closes
+      </label>
+    </div>
+    
+    <button id="resetBtn" class="reset-btn">🗑️ Reset All Groups</button>
     <div id="status" style="display: none;">Analyzing your tabs...</div>
   </div>
   

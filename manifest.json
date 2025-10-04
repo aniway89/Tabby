@@ -5,7 +5,8 @@
   "description": "AI-powered tab organization",
   "permissions": [
     "tabs",
-    "tabGroups"
+    "tabGroups",
+    "storage"
   ],
   "host_permissions": [
     "https://*/*",
