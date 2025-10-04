@@ -40,8 +40,8 @@ const themes = {
         previewClass: 'preview-entertainment',
         visualColor: '#bdc3c7'
       },
-      '📊 Productivity': { 
-        icon: '📊', 
+      '⏳ Productivity': { 
+        icon: '⏳', 
         color: 'grey', 
         title: 'Productivity',
         previewClass: 'preview-productivity',
