@@ -2,18 +2,12 @@
   "manifest_version": 3,
   "name": "TabForge AI",
   "version": "1.0",
-  "description": "AI-powered tab organization",
-  "permissions": [
-    "tabs",
-    "tabGroups",
-    "storage"
-  ],
-  "host_permissions": [
-    "https://*/*",
-    "http://*/*"
-  ],
+  "description": "AI-powered tab organization with themes",
+  "permissions": ["tabs", "tabGroups", "storage", "notifications"],
   "action": {
-    "default_popup": "popup.html",
-    "default_title": "Organize Tabs with AI"
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
   }
 }
