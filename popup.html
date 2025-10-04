@@ -6,89 +6,59 @@
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>🔄 TabForge</h1>
-      <p>Smart tab organization with AI</p>
-    </header>
+    <div class="section-1">
 
-    <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="organize">Organize</button>
-      <button class="tab-btn" data-tab="settings">Settings</button>
-      <button class="tab-btn" data-tab="themes">Themes</button>
-    </nav>
-
-    <!-- Organize Tab -->
-    <div id="organize" class="tab-content active">
-      <div class="card">
-        <button id="organizeBtn" class="primary-btn">
-          <span class="btn-icon">🧠</span>
-          Analyze & Organize Tabs
-        </button>
-        <button id="resetBtn" class="secondary-btn">
-          <span class="btn-icon">🗑️</span>
-          Reset All Groups
-        </button>
-        <div class="action-buttons">
-          <button id="collapseBtn" class="action-btn">
-            <span class="btn-icon">📦</span>
-            Collapse Other Groups
-          </button>
-          <button id="expandBtn" class="action-btn">
-            <span class="btn-icon">📂</span>
-            Expand All Groups
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Settings Tab -->
-    <div id="settings" class="tab-content">
-      <div class="card">
-        <h3>Browser Behavior</h3>
-        <div class="toggle-group">
-          <label class="toggle-item">
-            <div class="toggle-content">
-              <strong>🔒 Keep Groups After Closing</strong>
-              <small>Tab groups remain when you reopen browser</small>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="keepGroupsToggle">
-              <span class="toggle-slider"></span>
-            </label>
-          </label>
-        </div>
-        <div class="setting-note">
-          <small>When OFF: Groups automatically removed when browser closes</small>
-        </div>
-        <button id="saveSettings" class="primary-btn">Save Settings</button>
-      </div>
-    </div>
-
-    <!-- Themes Tab -->
-    <div id="themes" class="tab-content">
-      <div class="card">
-        <h3>Choose Theme Style</h3>
-        <div class="theme-grid" id="themeGrid">
-          <!-- Themes loaded dynamically -->
-        </div>
+        <img src="icons/Icon.png" alt="" class="icon">
+        <h2><span class="purple">
+            {
+        </span> Tabby <span class="purple">
+        }
+        </span> </h2> 
+        <p>Smart tab organization with auto-cleanup</p>
         
-        <div class="theme-preview" id="themePreview">
-          <h4>Theme Preview</h4>
-          <div id="previewContent" class="preview-content"></div>
-        </div>
+        <button id="organizeBtn">Organize Tabs</button>
+        <button id="resetBtn" class="reset">UnGroups</button>
+        <div class="settting_button">Setting</div>
         
-        <!-- Apply Button - Always visible but enabled only when theme selected -->
-        <button id="applyTheme" class="primary-btn apply-theme-btn" disabled>
-          <span class="btn-icon">🎨</span>
-          Apply Selected Theme
-        </button>
-      </div>
+    
+        
+        <div id="status"></div>
     </div>
-
-    <div id="status" class="status-message"></div>
+    <div class="Theme-section">
+        <h4>Settings</h4>
+            
+        <div class="section">
+        <label>
+        <input type="checkbox" id="keepGroupsToggle">
+            Keep groups after browser closes
+        </label>
+        <div class="note">
+            <small>When unchecked: Groups will be removed AND old tabs will be closed when browser reopens</small>
+        </div>
+        <div class="button_navigation">
+            Change Theme
+        </div>
+        </div>
+    </div>
+    <div class="Theme-area">
+        <div class="button_selecion Natural_Green">
+            Natrual Green
+        </div>
+        <div class="button_selecion Deep_Blue">
+            Deep Blue
+        </div>
+        <div class="button_selecion Dark_Purple">
+            Dark Purple
+        </div>
+        <div class="button_selecion Light_Purple">
+            Tobby Theme
+        </div>
+        <div class="button_selecion white_theme">
+            Black & White
+        </div>
+    </div>
   </div>
 
-  <script src="themes.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
