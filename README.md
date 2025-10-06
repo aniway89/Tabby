@@ -17,7 +17,7 @@ Landing Page Included: Showcases Tabby’s features with demo videos, screenshot
 Installation
 Browser Extension
 
-Download the extension package from the [Download link]([url](https://graceful-griffin-41d1bc.netlify.app/))
+Download the extension package from the [Download link]([https://graceful-griffin-41d1bc.netlify.app/]())
 .
 
 Open your browser’s extensions/add-ons page.
